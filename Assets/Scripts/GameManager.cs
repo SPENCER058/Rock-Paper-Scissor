@@ -6,13 +6,25 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Unit player;
     [SerializeField] private Unit enemy;
+    [SerializeField] private UIManager uiManager;
     [SerializeField] private Button[] inputButton;
 
     private ActionType playerAction;
     private ActionType enemyAction;
 
-    // Player Input
-    public void InputAction (int index) {
+	private void Start () {
+        player.Initialize();
+        enemy.Initialize();
+		player.setOpponent(enemy);
+        enemy.setOpponent(player);
+
+		player.HPChange += OnUIPlayerHPChange;
+		enemy.HPChange += OnUIEnemyHPChange;
+
+	}
+
+	// Player Input
+	public void InputAction (int index) {
         foreach (Button button in inputButton) {
             button.interactable = false;
         }
@@ -63,17 +75,27 @@ public class GameManager : MonoBehaviour
         Debug.Log(roundResult);
         switch (roundResult) {
             case RoundResult.PlayerVictory:
+                player.Attack();
                 break;
             case RoundResult.Draw:
                 break;
             case RoundResult.PlayerLose:
+                enemy.Attack();
                 break;
         }
 
         StartCoroutine(CombatSequence());
     }
 
-    private IEnumerator CombatSequence () {
+	private void OnUIPlayerHPChange (float percentageHp) {
+		uiManager.UpdatePlayerHPBar(percentageHp);
+	}
+
+	private void OnUIEnemyHPChange (float percentageHp) {
+		uiManager.UpdateEnemyHPBar(percentageHp);
+	}
+
+	private IEnumerator CombatSequence () {
         yield return new WaitForSeconds(1f);
         foreach (Button button in inputButton) {
             button.interactable = true;
