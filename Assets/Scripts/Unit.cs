@@ -6,19 +6,15 @@ public class Unit : MonoBehaviour
 	[SerializeField] private float maxHp;
 	[SerializeField] private float hp;
 	[SerializeField] private float attackDamage;
-	[SerializeField] private Unit opponent;
 
 	public Action<float> HPChange;
+	public Action UnitDead;
 
 	public void Initialize () {
 		hp = maxHp;
 	}
 
-	public void setOpponent (Unit opponentInput) {
-		opponent = opponentInput;
-	}
-
-	public void Attack () {
+	public void Attack (Unit opponent) {
 		opponent.GetDamaged(attackDamage);
 	}
 
@@ -28,9 +24,10 @@ public class Unit : MonoBehaviour
 
 		if(hp < 0) {
 			// dead 
-			Debug.Log(this+"Dead");
+			UnitDead?.Invoke();
 		}
 	}
+
 	private void HPValueChange () {
 		HPChange?.Invoke(hp / maxHp);
 	}
