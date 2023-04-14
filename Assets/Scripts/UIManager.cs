@@ -18,17 +18,23 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private TMP_Text playerChoiceText;
 	[SerializeField] private TMP_Text enemyChoiceText;
 
+	[Header("In Game Component")]
+	[SerializeField] private Button pauseButton;
+
 	[Header("Panel Text")]
 	[SerializeField] private TMP_Text panelText;
+	[SerializeField] private TMP_Text textRestartPlayAgain;
+
+	[Header("Panel Component")]
 	[SerializeField] private GameObject resumeButton;
 	[SerializeField] private Button restartPlayAgain;
-	[SerializeField] private TMP_Text textRestartPlayAgain;
 
 	public Action<int> UserInput;
 
 	public void Initialize() {
 		SetResultTextEmpty();
 		DisableChoiceButton();
+		SetPausePanel();
 	}
 
 	public void ButtonClicked (int index) {
@@ -41,7 +47,7 @@ public class UIManager : MonoBehaviour
 		enemyChoiceText.text = " ";
 	}
 
-	public void ShowPausePanel () {
+	public void SetPausePanel () {
 		panelText.text="PAUSE";
 		if (!resumeButton.activeSelf) {
 			resumeButton.SetActive(true);
@@ -50,10 +56,11 @@ public class UIManager : MonoBehaviour
 
 	}
 
-	public void ShowResultPanel (string result) {
-		panelText.text = result;
+	public void SetResultPanel (string result) {
+		panelText.text = result + " WIN";
 		resumeButton.SetActive(false);
 		textRestartPlayAgain.text = "Play Again";
+		pauseButton.onClick.Invoke();
 	}
 
 	public void SetBattleResultText (string text) {
@@ -78,6 +85,14 @@ public class UIManager : MonoBehaviour
 		foreach (Button button in inputButton) {
 			button.interactable = false;
 		}
+	}
+
+	public void EnablePauseButton () {
+		pauseButton.interactable = true;
+	}
+
+	public void DisablePauseButton () {
+		pauseButton.interactable = false;
 	}
 
 	public void UpdatePlayerHPBar (float hpPercentage) {

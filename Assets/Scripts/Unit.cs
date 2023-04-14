@@ -22,7 +22,7 @@ public class Unit : MonoBehaviour
 		hp -= damageValue;
 		HPValueChange();
 
-		if(hp < 0) {
+		if(hp <= 0) {
 			// dead 
 			UnitDead?.Invoke();
 		}

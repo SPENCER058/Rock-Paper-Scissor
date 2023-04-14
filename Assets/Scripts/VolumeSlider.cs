@@ -17,23 +17,22 @@ public class VolumeSlider : MonoBehaviour
 	}
 
 	private void OnDestroy () {
-		PlayerPrefs.Save();
 		var db = ValueToDb(slider.value);
-		
+		PlayerPrefs.SetFloat("BGM_VOL", db);
+		PlayerPrefs.Save();
 	}
 
 	public void SetAttenuation (float value) {
 		var db = ValueToDb(value);
-
-		audioMixer.SetFloat(parameter,db);
+		audioMixer.SetFloat(parameter, db);
 		PlayerPrefs.SetFloat("BGM_VOL", db);
 		playerPrefDist["BGM_VOL"] = db;
 	}
 
 	public float ValueToDb (float value) {
 		return value == 0 ? -80f : 20f * Mathf.Log10(value);
-	}	
-	
+	}
+
 	public float DbToValue (float db) {
 		return db == -80 ? 0 : Mathf.Pow(10, db / 20f);
 	}
