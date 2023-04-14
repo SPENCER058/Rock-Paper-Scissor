@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -25,8 +23,8 @@ public class BattleManager : MonoBehaviour
 		enemy.UnitDead += OnEnemyDead;
 
 		StartCoroutine(Countdown(4));
-		DontDestroyOnLoad(gameObject);
 	}
+
 
 	private void OnDestroy () {
 		uiManager.UserInput -= InputAction;
@@ -34,6 +32,7 @@ public class BattleManager : MonoBehaviour
 		enemy.HPChange -= OnUIEnemyHPChange;
 		player.UnitDead -= OnPlayerDead;
 		enemy.UnitDead -= OnEnemyDead;
+		Debug.Log("OnDestroy");
 	}
 
 
@@ -111,18 +110,25 @@ public class BattleManager : MonoBehaviour
 	}
 
 	private void OnEnemyDead () {
-		throw new System.NotImplementedException();
+		Debug.Log("Enemy Dead");
+		StartCoroutine(GameOver("Player"));
 	}
 
 	private void OnPlayerDead () {
-		throw new System.NotImplementedException();
+		Debug.Log("Player Dead");
+		StartCoroutine(GameOver("Enemy"));
+	}
+
+	private IEnumerator GameOver (string winner) {
+		uiManager.DisablePauseButton();
+		yield return new WaitForSeconds(3f);
+		uiManager.SetResultPanel(winner);
 	}
 
 	private IEnumerator CombatSequence () {
         yield return new WaitForSeconds(3f);
         uiManager.EnableChoiceButton();
         uiManager.SetResultTextEmpty();
-
 	}
 
 	private IEnumerator Countdown (int seconds) {
